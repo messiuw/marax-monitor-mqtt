@@ -3,13 +3,14 @@
 
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include "DisplayData.h"
 
 class OledDisplay
 {
 public:
-    OledDisplay();
-    void initialize();
-    void updateView(String *maraData);
+    OledDisplay(DisplayData &displayData);
+    void initialize(void);
+    void updateView(void);
 
 private:
     static const uint8_t SCREEN_WIDTH = 128U; // Width in px
@@ -20,14 +21,18 @@ private:
     static const uint8_t RXD2 = 16U;
     static const uint8_t TXD2 = 17U;
 
-    Adafruit_SSD1306 m_display;
+    static const uint8_t SHOW_NEW_TIMER_THRESHOLD = 3U;
 
-    long m_lastMillis;
-    int m_seconds;
-    int m_lastTimer;
-    char m_buffer[BUFFER_SIZE];
-    int m_tmp_index;
-    int m_pumpState;
+    DisplayData displayData;
+
+    Adafruit_SSD1306 display_handler;
+
+    void updateTimer(void);
+    void updateMode(void);
+    void updateSteam(void);
+    void updatePump(void);
+    void updateHeater(void);
+    void updateHx(void);
 };
 
 #endif // OLED_DISPLAY_H

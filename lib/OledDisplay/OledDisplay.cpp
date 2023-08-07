@@ -2,87 +2,104 @@
 #include <Wire.h>
 #include "OledDisplay.h"
 
-OledDisplay::OledDisplay()
-    : m_display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET)
+OledDisplay::OledDisplay(DisplayData &displayData)
+    : displayData(displayData), display_handler(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET)
 {
-    m_seconds = 0;
-    m_lastTimer = 0;
-    m_tmp_index = 0;
-    m_pumpState = 0;
-    memset(m_buffer, 0, BUFFER_SIZE);
-    // TODO add reset of all values
 }
 
 void OledDisplay::initialize()
 {
-    m_display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
-    delay(1000);
-    m_display.clearDisplay();
-    m_display.setTextSize(1);
-    m_display.setTextColor(WHITE);
-    m_display.setCursor(0, 0);
+    display_handler.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
+    delay(1000U);
+    display_handler.clearDisplay();
+    display_handler.setTextSize(1);
+    display_handler.setTextColor(WHITE);
+    display_handler.setCursor(0, 0);
 }
 
 // Method to update the display with coffee machine data
-void OledDisplay::updateView(String *maraData)
+void OledDisplay::updateView(void)
 {
-    m_display.clearDisplay();
-    m_display.setTextColor(WHITE);
-    // HX
-    m_display.setCursor(2, 2);
-    m_display.setTextSize(2);
-    m_display.print(maraData[3].toInt());
-    m_display.setTextSize(1);
-    m_display.print((char)247);
-    m_display.setTextSize(1);
-    m_display.print("C");
-    // Pump
-    m_display.setCursor(2, 30);
-    m_display.print("H");
-    if (maraData[5].toInt() == 0)
-        m_display.drawCircle(17, 33, 6, WHITE);
-    else
-        m_display.fillCircle(17, 33, 5, WHITE);
-    m_display.setCursor(30, 30);
-    // Heater
-    m_display.print("P");
-    if (maraData[6].toInt() == 0)
-        m_display.drawRect(40, 28, 10, 10, WHITE);
-    else
-        m_display.fillRect(40, 28, 10, 10, WHITE);
-    // Steam
-    m_display.setCursor(2, 50);
-    m_display.setTextSize(2);
-    m_display.print(maraData[1].toInt());
-    m_display.setTextSize(1);
-    m_display.print((char)247);
-    m_display.setTextSize(1);
-    m_display.print("C");
-    m_display.drawLine(55, 0, 55, 68, WHITE);
-    m_display.setCursor(65, 15);
-    m_display.setTextSize(5);
-    // Timer
-    if (m_seconds > 3)
+    display_handler.clearDisplay();
+    display_handler.setTextColor(WHITE);
+
+    updateHeater();
+    updatePump();
+    updateSteam();
+    updateTimer();
+    updateMode();
+}
+
+void OledDisplay::updateTimer(void)
+{
+    if (displayData.timer_sec > SHOW_NEW_TIMER_THRESHOLD)
     {
-        String actual = String(m_seconds);
+        String actual = String(displayData.timer_sec);
         if (actual.length() < 2)
             actual = "0" + actual;
-        m_display.print(actual);
+        display_handler.print(actual);
     }
-    else if (m_lastTimer > 3)
+    else if (displayData.lastTimer_sec > SHOW_NEW_TIMER_THRESHOLD)
     {
-        String last = String(m_lastTimer);
+        String last = String(displayData.lastTimer_sec);
         if (last.length() < 2)
             last = "0" + last;
-        m_display.print(last);
+        display_handler.print(last);
     }
     else
     {
-        m_display.print("00");
+        display_handler.print("00");
     }
-    // Mode
-    m_display.setTextSize(1);
-    m_display.setCursor(120, 2);
-    m_display.print(maraData[0].substring(0, 1));
-    m_display.display();
+}
+
+void OledDisplay::updateMode(void)
+{
+    display_handler.setTextSize(1U);
+    display_handler.setCursor(120, 2);
+    display_handler.print(displayData.mode);
+    display_handler.display();
+}
+
+void OledDisplay::updateSteam(void)
+{
+    display_handler.setCursor(2, 50);
+    display_handler.setTextSize(2U);
+    display_handler.print(displayData.current_steam_temp);
+    display_handler.setTextSize(1U);
+    display_handler.print((char)247);
+    display_handler.setTextSize(1U);
+    display_handler.print("C");
+    display_handler.drawLine(55, 0, 55, 68, WHITE);
+    display_handler.setCursor(65, 15);
+    display_handler.setTextSize(5U);
+}
+void OledDisplay::updatePump(void)
+{
+    display_handler.print("P");
+    if (displayData.pump_state == 0)
+        display_handler.drawRect(40, 28, 10, 10, WHITE);
+    else
+        display_handler.fillRect(40, 28, 10, 10, WHITE);
+}
+
+void OledDisplay::updateHeater(void)
+{
+    display_handler.setCursor(2, 30);
+    display_handler.print("H");
+    if (displayData.heating_state == 0)
+        display_handler.drawCircle(17, 33, 6, WHITE);
+    else
+        display_handler.fillCircle(17, 33, 5, WHITE);
+    display_handler.setCursor(30, 30);
+}
+
+void OledDisplay::updateHx(void)
+{
+    display_handler.setCursor(2, 2);
+    display_handler.setTextSize(2U);
+    display_handler.print(displayData.current_hx_temp);
+    display_handler.setTextSize(1U);
+    display_handler.print((char)247);
+    display_handler.setTextSize(1U);
+    display_handler.print("C");
 }

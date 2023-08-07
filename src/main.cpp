@@ -2,39 +2,30 @@
 #include <Arduino.h>
 #include "MaraData.h"
 #include "OledDisplay.h"
-
-// Internals
-long lastMillis;
-int seconds = 0;
-int lastTimer = 0;
-
-// Mara Data
-String maraData[7];
-String *lastMaraData;
+#include "mqtt.h"
+#include "espwifi.h"
+#include "MaraTimer.h"
 
 void setup()
 {
+    EspWifi espWifi;
 }
 
 void loop()
 {
-  // getMaraData();
-  int pumpState = lastMaraData[6].toInt();
-  if (pumpState == 1)
-  {
-    if (millis() - lastMillis >= 1000)
+    DisplayData displayData = {};
+    Mqtt mqtt(displayData);
+    MaraData marax(displayData);
+    MaraTimer timer(displayData);
+    OledDisplay oled(displayData);
+
+    while (true)
     {
-      lastMillis = millis();
-      ++seconds;
-      if (seconds > 99)
-        seconds = 0;
+        (displayData.pump_state == 1) ? timer.start() : timer.stop();
+        timer.run();
+        marax.updateDisplayData();
+        timer.updateDisplayData();
+        oled.updateView();
+        mqtt.sendMaraData();
     }
-  }
-  else
-  {
-    if (seconds != 0)
-      lastTimer = seconds;
-    seconds = 0;
-  }
-  // updateView();
 }
