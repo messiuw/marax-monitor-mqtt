@@ -7,17 +7,23 @@ EspWifi::EspWifi()
 
 void EspWifi::initialize(void)
 {
-    // m_debug.println("Start connection");
-    // m_debug.print("Connect to:");
-    // m_debug.println(ssid);
+    Serial.println("Start connection");
+    Serial.print("Connect to:");
+    Serial.println(SSID);
     if (!connectionActive)
     {
         WiFi.persistent(true);
         WiFi.mode(WIFI_STA);
         if (WiFi.begin(SSID, PWD) != WL_CONNECT_FAILED)
         {
-            // m_debug.println("Waiting for connection...");
-            connectionActive = (WiFi.waitForConnectResult() == WL_CONNECTED);
+            Serial.println("Waiting for connection...");
+            while (WiFi.status() != WL_CONNECTED)
+            {
+                Serial.print('.');
+                delay(500);
+            }
+            Serial.println("Wifi connected!");
+            connectionActive = true;
         }
     }
 }

@@ -8,12 +8,14 @@
 
 void setup()
 {
+    Serial.begin(9600);
     EspWifi espWifi;
 }
 
 void loop()
 {
     DisplayData displayData = {};
+    DisplayData displayDataOld = displayData;
     Mqtt mqtt(displayData);
     MaraData marax(displayData);
     MaraTimer timer(displayData);
@@ -23,9 +25,13 @@ void loop()
     {
         (displayData.pump_state == 1) ? timer.start() : timer.stop();
         timer.run();
-        marax.updateDisplayData();
+        marax.getMaraData();
         timer.updateDisplayData();
-        oled.updateView();
-        mqtt.sendMaraData();
+        if (memcmp(&displayData, &displayDataOld, sizeof(DisplayData)) != 0)
+        {
+            displayDataOld = displayData;
+            oled.updateView();
+            mqtt.sendMaraData();
+        }
     }
 }

@@ -10,9 +10,8 @@ MaraData::MaraData(DisplayData &displayData) : displayData(displayData)
 // Initialize display and serial connections
 void MaraData::initialize()
 {
-    Serial.begin(9600);
     Serial1.begin(9600, SERIAL_8N1, RXD2, TXD2);
-    Serial1.write(0x11);
+    memset(rxBuffer, 0, BUFFER_SIZE);
 }
 
 // Method to get data from Maria coffee machine
@@ -31,41 +30,57 @@ void MaraData::getMaraData(void)
   5)      1     heating element on or off
   6)      0     pump on or off
 */
-    unsigned long m_Serial1Timeout = 0U;
-    uint8_t m_tmp_index = 0U;
-    char m_buffer[BUFFER_SIZE];
-    memset(m_buffer, 0, BUFFER_SIZE);
+    Serial.println("Get MaraX data...");
+    const char startChar[] = {'C', 'V', '+'};
 
     while (Serial1.available())
     {
-        m_Serial1Timeout = millis();
         char rcv = Serial1.read();
-        if (rcv != '\n')
-            m_buffer[m_tmp_index++] = rcv;
-        else
+        if ((rcv == startChar[0]) || (rcv == startChar[1]) || (rcv == startChar[2]))
         {
-            m_tmp_index = 0U;
-            Serial.println(m_buffer);
-            char *ptr = strtok(m_buffer, ",");
-            size_t idx = 0U;
-            while (ptr != NULL && idx < MARADATA_MAX_ELEMENT_NUM)
+            startCharReceived = true;
+            tmpIndex = 0U;
+            Serial.println("Start received...");
+        }
+        if (startCharReceived)
+        {
+            if (rcv != '\n')
+                if (tmpIndex < BUFFER_SIZE)
+                {
+                    rxBuffer[tmpIndex++] = rcv;
+                }
+                else
+                {
+                    Serial.println("BufferIndex full! Clearing...");
+                    tmpIndex = 0U;
+                    memset(rxBuffer, 0, BUFFER_SIZE);
+                    startCharReceived = false;
+                }
+            else
             {
-                strncpy(maraData[idx], ptr, MARADATA_MAX_ELEMENT_SIZE - 1);
-                maraData[idx][MARADATA_MAX_ELEMENT_SIZE - 1U] = '\0'; // Ensure null-terminated
-                idx++;
-                ptr = strtok(NULL, ",");
+                tmpIndex = 0U;
+                Serial.println(rxBuffer);
+                char *ptr = strtok(rxBuffer, ",");
+                size_t idx = 0U;
+                while (ptr != NULL && idx < MARADATA_MAX_ELEMENT_NUM)
+                {
+                    strncpy(maraData[idx], ptr, MARADATA_MAX_ELEMENT_SIZE - 1);
+                    maraData[idx][MARADATA_MAX_ELEMENT_SIZE - 1U] = '\0'; // Ensure null-terminated
+                    idx++;
+                    ptr = strtok(NULL, ",");
+                }
+                updateDisplayData();
+                memset(rxBuffer, 0, BUFFER_SIZE);
+                startCharReceived = false;
+                break;
             }
         }
-    }
-    if (millis() - m_Serial1Timeout > 6000)
-    {
-        m_Serial1Timeout = millis();
-        Serial1.write(0x11);
     }
 }
 
 void MaraData::updateDisplayData(void)
 {
+    Serial.println("Save MaraX data to displayData...");
     displayData.mode = maraData[MODE][0];
     displayData.current_steam_temp = atoi(&maraData[CURRENT_STEAM_TEMP][0]);
     displayData.target_steam_temp = atoi(&maraData[TARGET_STEAM_TEMP][0]);

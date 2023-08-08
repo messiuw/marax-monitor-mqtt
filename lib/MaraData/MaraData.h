@@ -23,6 +23,7 @@ public:
 
     static constexpr uint8_t MARADATA_MAX_ELEMENT_SIZE = 5U;
 
+    void getMaraData(void);
     void updateDisplayData(void);
 
 private:
@@ -33,10 +34,14 @@ private:
     static constexpr uint8_t MARADATA_MAX_ELEMENT_NUM = DataPos::LAST_ELEMENT + 1U;
     char maraData[MARADATA_MAX_ELEMENT_NUM][MARADATA_MAX_ELEMENT_SIZE];
 
-    DisplayData displayData;
+    uint8_t tmpIndex = 0U;
+    char rxBuffer[BUFFER_SIZE];
+
+    bool startCharReceived = false;
+
+    DisplayData &displayData;
 
     void initialize(void);
-    void getMaraData(void);
 };
 
 #endif // MARA_DATA_H

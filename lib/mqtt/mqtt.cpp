@@ -11,33 +11,25 @@ void Mqtt::connect(void)
 {
     if (!connectionActive)
     {
-        // m_debug.println("Connect to mqtt client");
+        Serial.println("Start connecting to mqtt server");
         client.setServer(server, port);
-
         client.setClient(espClient);
-
         while (!client.connected())
         {
-            // m_debug.println("Connecting to MQTT...");
+            Serial.println("Connecting...");
             if (client.connect("MaraxClient", username, password))
             {
-                // m_debug.println("connected");
+                Serial.println("connected!");
                 connectionActive = true;
                 break;
             }
-            delay(100U);
+            delay(500U);
         }
     }
 }
 
 void Mqtt::send(const char *topic, const char *payload)
 {
-    // m_debug.println("Send MQTT messages");
-    // m_debug.print("topic:");
-    // m_debug.println(topic);
-    // m_debug.print("payload:");
-    // m_debug.println(payload);
-
     client.publish(topic, payload);
 }
 

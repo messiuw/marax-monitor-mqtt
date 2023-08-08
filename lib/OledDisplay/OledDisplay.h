@@ -23,10 +23,11 @@ private:
 
     static const uint8_t SHOW_NEW_TIMER_THRESHOLD = 3U;
 
-    DisplayData displayData;
+    DisplayData &displayData;
 
     Adafruit_SSD1306 display_handler;
 
+    void updateLastTimer(void);
     void updateTimer(void);
     void updateMode(void);
     void updateSteam(void);

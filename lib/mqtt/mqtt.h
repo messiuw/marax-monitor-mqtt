@@ -23,7 +23,7 @@ private:
     // MQTT Client
     PubSubClient client;
 
-    DisplayData displayData;
+    DisplayData &displayData;
 
     static constexpr const char *server = "xxxx";
     static constexpr const uint16_t port = 1883;

@@ -6,6 +6,7 @@ MaraTimer::MaraTimer(DisplayData &displayData) : displayData(displayData)
 
 void MaraTimer::run(void)
 {
+    Serial.println("Run timer...");
     if (timerActive)
     {
         constexpr unsigned long SECONDS_IN_MS = 1000U;
@@ -29,6 +30,7 @@ void MaraTimer::run(void)
 
 void MaraTimer::updateDisplayData(void)
 {
+    Serial.println("update timer value...");
     displayData.lastTimer_sec = lastTimer;
     displayData.timer_sec = seconds;
 }

@@ -20,7 +20,7 @@ private:
     uint8_t lastTimer = 0U;
     unsigned long lastMillis = 0U;
     uint8_t seconds = 0U;
-    DisplayData displayData;
+    DisplayData &displayData;
 };
 
 #endif // MARATIMER_H

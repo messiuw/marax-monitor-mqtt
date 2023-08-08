@@ -5,10 +5,12 @@
 OledDisplay::OledDisplay(DisplayData &displayData)
     : displayData(displayData), display_handler(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET)
 {
+    initialize();
 }
 
 void OledDisplay::initialize()
 {
+    Serial.println("OLED initialize...");
     display_handler.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
     delay(1000U);
     display_handler.clearDisplay();
@@ -20,18 +22,32 @@ void OledDisplay::initialize()
 // Method to update the display with coffee machine data
 void OledDisplay::updateView(void)
 {
+    Serial.println("update OLED view");
     display_handler.clearDisplay();
     display_handler.setTextColor(WHITE);
 
+    updateHx();
     updateHeater();
     updatePump();
     updateSteam();
     updateTimer();
     updateMode();
+    updateLastTimer();
+    display_handler.display();
+}
+
+void OledDisplay::updateLastTimer(void)
+{
+    if (displayData.lastTimer_sec > 0)
+    {
+        display_handler.setCursor(115, 57);
+        display_handler.print(displayData.lastTimer_sec);
+    }
 }
 
 void OledDisplay::updateTimer(void)
 {
+    Serial.println("update Timer...");
     if (displayData.timer_sec > SHOW_NEW_TIMER_THRESHOLD)
     {
         String actual = String(displayData.timer_sec);
@@ -54,14 +70,17 @@ void OledDisplay::updateTimer(void)
 
 void OledDisplay::updateMode(void)
 {
+    Serial.println("update Mode...");
+    Serial.println(displayData.mode);
     display_handler.setTextSize(1U);
     display_handler.setCursor(120, 2);
     display_handler.print(displayData.mode);
-    display_handler.display();
 }
 
 void OledDisplay::updateSteam(void)
 {
+    Serial.println("update Steam...");
+    Serial.println(displayData.current_steam_temp);
     display_handler.setCursor(2, 50);
     display_handler.setTextSize(2U);
     display_handler.print(displayData.current_steam_temp);
@@ -75,6 +94,8 @@ void OledDisplay::updateSteam(void)
 }
 void OledDisplay::updatePump(void)
 {
+    Serial.println("update Pump...");
+    Serial.println(displayData.pump_state);
     display_handler.print("P");
     if (displayData.pump_state == 0)
         display_handler.drawRect(40, 28, 10, 10, WHITE);
@@ -84,6 +105,8 @@ void OledDisplay::updatePump(void)
 
 void OledDisplay::updateHeater(void)
 {
+    Serial.println("update Heater...");
+    Serial.println(displayData.heating_state);
     display_handler.setCursor(2, 30);
     display_handler.print("H");
     if (displayData.heating_state == 0)
@@ -95,6 +118,8 @@ void OledDisplay::updateHeater(void)
 
 void OledDisplay::updateHx(void)
 {
+    Serial.println("update Hx...");
+    Serial.println(displayData.current_hx_temp);
     display_handler.setCursor(2, 2);
     display_handler.setTextSize(2U);
     display_handler.print(displayData.current_hx_temp);
