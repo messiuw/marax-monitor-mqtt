@@ -26,8 +26,7 @@ The MaraX has a 6-PIN Connector for the serial interface on the bottom. We only 
 - **PIN3 Mara** to  **TX2**
 - **PIN4 Mara** to **RX2**
 
-RX Mara to TX2 ESP32
-TX Mara to RX2 ESP32
+RX Mara to TX2 ESP32 and TX Mara to RX2 ESP32
 
 ![MaraX Bottom](https://github.com/belectronic/marax-monitor-mqtt/blob/main/assets/Bottom.png?raw=true)
 
