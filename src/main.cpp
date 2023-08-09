@@ -9,12 +9,12 @@
 void setup()
 {
     Serial.begin(9600);
-    EspWifi espWifi;
 }
 
 void loop()
 {
     DisplayData displayData = {};
+    EspWifi espWifi;
     DisplayData displayDataOld = displayData;
     Mqtt mqtt(displayData);
     MaraData marax(displayData);
@@ -33,5 +33,6 @@ void loop()
             oled.updateView();
             mqtt.sendMaraData();
         }
+        mqtt.loop();
     }
 }

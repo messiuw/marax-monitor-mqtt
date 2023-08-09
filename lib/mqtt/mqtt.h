@@ -11,6 +11,7 @@ public:
     Mqtt(DisplayData &displayData);
 
     void connect(void);
+    void loop(void);
     void send(const char *topic, const char *payload);
     void stop(void);
 
@@ -36,6 +37,7 @@ private:
     static constexpr const char *TOPIC_PUMP_STATE = "marax/pump/state";
 
     void send_int_val(const char *topic, const uint8_t &value);
+    void reconnect(void);
 };
 
 #endif // MQTT_H

@@ -28,9 +28,44 @@ void Mqtt::connect(void)
     }
 }
 
+void Mqtt::reconnect(void)
+{
+    // Loop until we're reconnected
+    unsigned long retryTime = millis();
+    static constexpr unsigned long MAX_RETRY_TIME = 10000U;
+    while (!client.connected())
+    {
+        Serial.print("Attempting MQTT reconnection...");
+        // Attempt to connect
+        if (client.connect("MaraxClient", username, password) || ((millis() - retryTime) > MAX_RETRY_TIME))
+        {
+            Serial.println("connected or timeout");
+            break;
+        }
+        delay(300U);
+    }
+}
+
+void Mqtt::loop(void)
+{
+    if (!client.connected())
+    {
+        connectionActive = false;
+        reconnect();
+    }
+    else
+    {
+        connectionActive = true;
+        client.loop();
+    }
+}
+
 void Mqtt::send(const char *topic, const char *payload)
 {
-    client.publish(topic, payload);
+    if (connectionActive)
+    {
+        client.publish(topic, payload);
+    }
 }
 
 void Mqtt::send_int_val(const char *topic, const uint8_t &value)

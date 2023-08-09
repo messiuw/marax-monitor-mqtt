@@ -9,6 +9,7 @@ public:
     EspWifi();
 
     void wifiDiscon(void);
+    void loop(void);
     bool connectionActive = false;
 
 private:

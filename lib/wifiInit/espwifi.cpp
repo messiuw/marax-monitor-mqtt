@@ -24,6 +24,7 @@ void EspWifi::initialize(void)
             }
             Serial.println("Wifi connected!");
             connectionActive = true;
+            WiFi.setAutoReconnect(true);
         }
     }
 }
@@ -32,4 +33,13 @@ void EspWifi::wifiDiscon(void)
 {
     WiFi.disconnect();
     connectionActive = false;
+}
+
+void EspWifi::loop(void)
+{
+    if (WiFi.status() != WL_CONNECTED)
+    {
+        WiFi.reconnect();
+        delay(5000U);
+    }
 }
