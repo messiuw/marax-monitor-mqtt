@@ -7,6 +7,11 @@ Inspirations came also from [https://github.com/alexrus/marax_timer](https://git
 
 ![Display](https://github.com/belectronic/marax-monitor-mqtt/blob/main/assets/DisplayInAction.png?raw=true)
 
+## Versioning
+
+I use a [Pythonscript](https://github.com/belectronic/marax-monitor-mqtt/blob/main/lib/Version/version_gen.py) for generating a *version.hpp*
+for displaying it on the OLED screen later (not implemented yet). If you don't need that, or if you don't have python installed please remove the line ```extra_scripts = pre:lib\Version\version_gen.py*``` in [platformio.ini](https://github.com/belectronic/marax-monitor-mqtt/blob/main/platformio.ini).
+
 ## Parts
 
 - ESP32 Node MCU (You can use any other equivalent board)
