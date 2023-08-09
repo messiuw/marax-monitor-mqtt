@@ -30,6 +30,7 @@ private:
     static constexpr const uint16_t port = 1883;
     static constexpr const char *username = "xxxx";
     static constexpr const char *password = "xxxx";
+    static constexpr const char *TOPIC_MODE = "marax/mode";
     static constexpr const char *TOPIC_CURRENT_STEAM_TEMP = "marax/steam/temp/current";
     static constexpr const char *TOPIC_TARGET_STEAM_TEMP = "marax/steam/temp/target";
     static constexpr const char *TOPIC_CURRENT_HX_TEMP = "marax/hx/temp/current";
