@@ -77,6 +77,8 @@ void Mqtt::send_int_val(const char *topic, const uint8_t &value)
 
 void Mqtt::sendMaraData(void)
 {
+    send(TOPIC_MODE, &displayData.mode);
+
     std::map<const char *, uint8_t> data_topic_map{
         {TOPIC_CURRENT_STEAM_TEMP, displayData.current_steam_temp},
         {TOPIC_TARGET_STEAM_TEMP, displayData.target_steam_temp},
