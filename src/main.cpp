@@ -14,12 +14,12 @@ void setup()
 void loop()
 {
     DisplayData displayData = {};
+    OledDisplay oled(displayData);
     EspWifi espWifi;
     DisplayData displayDataOld = displayData;
     Mqtt mqtt(displayData);
     MaraData marax(displayData);
     MaraTimer timer(displayData);
-    OledDisplay oled(displayData);
 
     while (true)
     {

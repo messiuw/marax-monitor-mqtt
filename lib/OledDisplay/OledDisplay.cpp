@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include "OledDisplay.h"
+#include "LogoData.hpp"
 
 OledDisplay::OledDisplay(DisplayData &displayData)
     : displayData(displayData), display_handler(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET)
@@ -14,6 +15,10 @@ void OledDisplay::initialize()
     display_handler.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
     delay(1000U);
     display_handler.clearDisplay();
+    display_handler.display();
+    // Displays LOGOarray on the screen
+    display_handler.drawBitmap(0, 0, LOGO_DATA_ARRAY, 128, 64, 1);
+    display_handler.display();
     display_handler.setTextSize(1);
     display_handler.setTextColor(WHITE);
     display_handler.setCursor(0, 0);
