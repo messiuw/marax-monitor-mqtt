@@ -1,10 +1,12 @@
 #include "mqtt.h"
 #include <map>
 #include "MaraData.h"
+#include "version.hpp"
 
 Mqtt::Mqtt(DisplayData &displayData) : displayData(displayData)
 {
     connect();
+    send(TOPIC_MONITOR_VERSION, APP_VERSION);
 }
 
 void Mqtt::connect(void)

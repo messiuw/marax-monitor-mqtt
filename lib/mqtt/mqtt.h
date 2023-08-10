@@ -36,6 +36,7 @@ private:
     static constexpr const char *TOPIC_CURRENT_HX_TEMP = "marax/hx/temp/current";
     static constexpr const char *TOPIC_HEATING_STATE = "marax/heating/state";
     static constexpr const char *TOPIC_PUMP_STATE = "marax/pump/state";
+    static constexpr const char *TOPIC_MONITOR_VERSION = "marax/monitor/version";
 
     void send_int_val(const char *topic, const uint8_t &value);
     void reconnect(void);
