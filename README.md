@@ -10,7 +10,7 @@ Inspirations came also from [https://github.com/alexrus/marax_timer](https://git
 ## Versioning
 
 I use a [Pythonscript](https://github.com/belectronic/marax-monitor-mqtt/blob/main/lib/Version/version_gen.py) for generating a *version.hpp*
-for transmitting via MQTT. If you don't need that, or if you don't have python installed please remove the line ```extra_scripts = pre:lib\Version\version_gen.py*``` in [platformio.ini](https://github.com/belectronic/marax-monitor-mqtt/blob/main/platformio.ini).
+for transmitting a version via MQTT. If you don't need that, or if you don't have python installed please remove the line ```extra_scripts = pre:lib\Version\version_gen.py*``` in [platformio.ini](https://github.com/belectronic/marax-monitor-mqtt/blob/main/platformio.ini).
 
 ## Parts
 
