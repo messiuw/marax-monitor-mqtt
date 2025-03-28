@@ -1,7 +1,7 @@
 #ifndef ESPWIFI_H
 #define ESPWIFI_H
 
-#include <WiFi.h>
+#include <ESP8266WiFi.h>
 
 class EspWifi
 {

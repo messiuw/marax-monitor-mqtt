@@ -1,6 +1,8 @@
 #include <Arduino.h>
-#include <HardwareSerial.h>
+#include <SoftwareSerial.h>
 #include "MaraData.h"
+
+SoftwareSerial mySerial(D5, D6);
 
 MaraData::MaraData(DisplayData &displayData) : displayData(displayData)
 {
@@ -9,8 +11,8 @@ MaraData::MaraData(DisplayData &displayData) : displayData(displayData)
 
 // Initialize display and serial connections
 void MaraData::initialize()
-{
-    Serial1.begin(9600, SERIAL_8N1, RXD2, TXD2);
+{    
+    mySerial.begin(9600);
     memset(rxBuffer, 0, BUFFER_SIZE);
 }
 
@@ -33,9 +35,9 @@ void MaraData::getMaraData(void)
     Serial.println("Get MaraX data...");
     const char startChar[] = {'C', 'V', '+'};
 
-    while (Serial1.available())
+    while (mySerial.available() >= 26)
     {
-        char rcv = Serial1.read();
+        char rcv = mySerial.read();
         if ((rcv == startChar[0]) || (rcv == startChar[1]) || (rcv == startChar[2]))
         {
             startCharReceived = true;

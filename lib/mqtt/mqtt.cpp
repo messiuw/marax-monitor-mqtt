@@ -19,7 +19,7 @@ void Mqtt::connect(void)
         while (!client.connected())
         {
             Serial.println("Connecting...");
-            if (client.connect("MaraxClient", username, password))
+            if (client.connect("MaraxClient"))
             {
                 Serial.println("connected!");
                 connectionActive = true;
@@ -39,7 +39,7 @@ void Mqtt::reconnect(void)
     {
         Serial.print("Attempting MQTT reconnection...");
         // Attempt to connect
-        if (client.connect("MaraxClient", username, password) || ((millis() - retryTime) > MAX_RETRY_TIME))
+        if (client.connect("MaraxClient") || ((millis() - retryTime) > MAX_RETRY_TIME))
         {
             Serial.println("connected or timeout");
             break;
