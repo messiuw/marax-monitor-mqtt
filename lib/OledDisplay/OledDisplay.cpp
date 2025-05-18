@@ -41,6 +41,25 @@ void OledDisplay::updateView(void)
     display_handler.display();
 }
 
+void OledDisplay::turnOffDisplay(void)
+{
+    if (!displayOn)
+        return;
+    Serial.println("Turning off OLED display...");
+    display_handler.ssd1306_command(SSD1306_DISPLAYOFF); // Schaltet das Display aus
+
+    displayOn = false;
+}
+
+void OledDisplay::turnOnDisplay(void)
+{
+    if (displayOn)
+        return;
+    Serial.println("Turning on OLED display...");
+    display_handler.ssd1306_command(SSD1306_DISPLAYON); // Schaltet das Display ein
+    displayOn = true;
+}
+
 void OledDisplay::updateLastTimer(void)
 {
     if (displayData.lastTimer_sec > 0)

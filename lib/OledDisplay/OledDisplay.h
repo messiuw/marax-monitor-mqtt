@@ -11,8 +11,11 @@ public:
     OledDisplay(DisplayData &displayData);
     void initialize(void);
     void updateView(void);
+    void turnOffDisplay(void);
+    void turnOnDisplay(void);
 
 private:
+    bool displayOn = true;
     static const uint8_t SCREEN_WIDTH = 128U; // Width in px
     static const uint8_t SCREEN_HEIGHT = 64U; // Height in px
     static const int8_t OLED_RESET = -1;

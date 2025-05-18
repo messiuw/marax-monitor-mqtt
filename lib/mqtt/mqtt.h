@@ -17,6 +17,8 @@ public:
 
     void sendMaraData(void);
 
+    bool isMaraOn(void);
+
     bool connectionActive = false;
 
 private:
@@ -26,6 +28,7 @@ private:
 
     DisplayData &displayData;
 
+    bool isOn = false;
     static constexpr const char *server = "192.168.178.103";
     static constexpr const uint16_t port = 1883;
     static constexpr const char *TOPIC_MODE = "marax/mode";
@@ -35,9 +38,11 @@ private:
     static constexpr const char *TOPIC_HEATING_STATE = "marax/heating_state";
     static constexpr const char *TOPIC_PUMP_STATE = "marax/pump_state";
     static constexpr const char *TOPIC_MONITOR_VERSION = "marax/monitor_version";
+    static constexpr const char *TOPIC_MARAX_POWER_STATE = "marax/power";
 
     void send_int_val(const char *topic, const uint8_t &value);
     void reconnect(void);
+    void onMessageReceived(char *topic, byte *payload, unsigned int length);
 };
 
 #endif // MQTT_H

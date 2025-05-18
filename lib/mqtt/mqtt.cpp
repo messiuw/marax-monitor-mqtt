@@ -16,16 +16,45 @@ void Mqtt::connect(void)
         Serial.println("Start connecting to mqtt server");
         client.setServer(server, port);
         client.setClient(espClient);
+
+        client.setCallback([this](char *topic, byte *payload, unsigned int length) {
+            this->onMessageReceived(topic, payload, length);
+        });
+
         while (!client.connected())
         {
             Serial.println("Connecting...");
             if (client.connect("MaraxClient"))
             {
                 Serial.println("connected!");
+                client.subscribe(TOPIC_MARAX_POWER_STATE);
                 connectionActive = true;
                 break;
             }
             delay(500U);
+        }
+    }
+}
+
+void Mqtt::onMessageReceived(char *topic, byte *payload, unsigned int length)
+{
+    Serial.print("Message arrived [");
+    Serial.print(topic);
+    Serial.print("] ");
+
+    if (strcmp(topic, TOPIC_MARAX_POWER_STATE) == 0) {
+        String message;
+        for (unsigned int i = 0; i < length; i++) {
+            message += (char)payload[i];
+        }
+
+        Serial.print("Message: ");
+        Serial.println(message);
+
+        if (message == "on") {
+            isOn = true;
+        } else {
+            isOn = false;
         }
     }
 }
@@ -99,4 +128,9 @@ void Mqtt::stop(void)
 {
     espClient.stop();
     connectionActive = false;
+}
+
+
+bool Mqtt::isMaraOn(void) {
+    return isOn;
 }

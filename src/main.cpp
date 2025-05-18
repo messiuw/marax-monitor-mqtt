@@ -23,6 +23,14 @@ void loop()
 
     while (true)
     {
+        Serial.println(mqtt.isMaraOn());
+        if (!mqtt.isMaraOn()) {
+            Serial.println("Mara is off");
+            oled.turnOffDisplay();
+        } else {
+            Serial.println("Mara is on");
+            oled.turnOnDisplay();
+        }
         (displayData.pump_state == 1) ? timer.start() : timer.stop();
         timer.run();
         marax.getMaraData();
